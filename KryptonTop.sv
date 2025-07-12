@@ -16,55 +16,24 @@ module KryptonTop (
         clk_div <= clk_div + 1;
     end
 
-    // VGA timing parameters
-    parameter H_VISIBLE_AREA = 640;
-    parameter H_FRONT_PORCH = 16;
-    parameter H_SYNC_PULSE = 96;
-    parameter H_BACK_PORCH = 48;
-    parameter V_VISIBLE_AREA = 480;
-    parameter V_FRONT_PORCH = 10;
-    parameter V_SYNC_PULSE = 2;
-    parameter V_BACK_PORCH = 33;
+    // Sync pulse generation
+    logic w_video_en, w_hblank, w_vblank;
+    logic [9:0] w_hsync_counter, w_vsync_counter;
+    KryptonSyncGen syncgen_inst (
+        .i_clk(video_clk),
+        .o_hsync(vga_hsync),
+        .o_vsync(vga_vsync),
+        .o_hsync_counter(w_hsync_counter),
+        .o_vsync_counter(w_vsync_counter),
+        .o_hblank(w_hblank),
+        .o_vblank(w_vblank),
+        .o_video_en(w_video_en),
+    );
 
-    parameter H_TOTAL = H_VISIBLE_AREA + H_FRONT_PORCH + H_SYNC_PULSE + H_BACK_PORCH; // 800
-    parameter V_TOTAL = V_VISIBLE_AREA + V_FRONT_PORCH + V_SYNC_PULSE + V_BACK_PORCH; // 525
-
-    // Registers
-    logic r_hsync, r_vsync, r_hblank, r_vblank, r_video_en;
-    logic [9:0] r_hsync_counter, r_vsync_counter, r_x_pixel;
-    logic [8:0] r_y_pixel;
-
-    // Output assignments
-    assign o_hsync = r_hsync;
-    assign o_vsync = r_vsync;
-    assign o_hsync_counter = r_hsync_counter;
-    assign o_vsync_counter = r_vsync_counter;
-    assign o_video_en = r_video_en;
-    
-    always_ff @(posedge video_clk) begin
-        // Horizontal counter
-        if (r_hsync_counter == H_TOTAL - 1) begin
-            r_hsync_counter <= 0;
-            // Vertial counter
-            if (r_vsync_counter == V_TOTAL - 1) begin
-                r_vsync_counter <= 0;
-            end else begin
-                r_vsync_counter <= r_vsync_counter + 1;
-            end
-        end else begin
-            r_hsync_counter <= r_hsync_counter + 1;
-        end
-
-        r_hsync <= ~(r_hsync_counter >= (H_VISIBLE_AREA + H_FRONT_PORCH) && r_hsync_counter < (H_VISIBLE_AREA + H_FRONT_PORCH + H_SYNC_PULSE));
-        r_vsync <= ~(r_vsync_counter >= (V_VISIBLE_AREA + V_FRONT_PORCH) && r_vsync_counter < (V_VISIBLE_AREA + V_FRONT_PORCH + V_SYNC_PULSE));
-        
-        r_video_en <= (r_hsync_counter < H_VISIBLE_AREA) && (r_vsync_counter < V_VISIBLE_AREA);
-    end
-
-    assign vga_hsync = r_hsync;
-    assign vga_vsync = r_vsync;
-    assign vga_red = (r_video_en) ? 5'b11111 : 0;
-    assign vga_green = (r_video_en) ? 6'b111111 : 0;
-    assign vga_blue = (r_video_en) ? 5'b11111 : 0;
+    // assign vga_hsync = r_hsync;
+    // assign vga_vsync = r_vsync;
+    assign vga_red = (w_video_en) ? 5'b11111 : 0;
+    assign vga_green = (w_video_en) ? 6'b111111 : 0;
+    assign vga_blue = (w_video_en) ? 5'b11111 : 0;
 
 endmodule

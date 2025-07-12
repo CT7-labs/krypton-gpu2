@@ -6,7 +6,7 @@ TMP_DIR = tmp
 
 # Top-level module and source files
 TOP_MODULE = KryptonTop
-SRC_FILES = KryptonTop.sv
+SRC_FILES = KryptonTop.sv KryptonSyncGen.sv
 
 # Output files
 JSON = $(TMP_DIR)/test.json
