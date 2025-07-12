@@ -31,7 +31,7 @@ module KryptonSyncGen (
     assign o_vsync = r_vsync;
     assign o_hsync_counter = r_hsync_counter;
     assign o_vsync_counter = r_vsync_counter;
-    assign o_video_en = r_video_en;
+    assign o_video_en = (r_hsync_counter < H_VISIBLE_AREA) && (r_vsync_counter < V_VISIBLE_AREA);
     
     always_ff @(posedge i_clk) begin
         // Horizontal counter
@@ -49,8 +49,6 @@ module KryptonSyncGen (
 
         r_hsync <= ~(r_hsync_counter >= (H_VISIBLE_AREA + H_FRONT_PORCH) && r_hsync_counter < (H_VISIBLE_AREA + H_FRONT_PORCH + H_SYNC_PULSE));
         r_vsync <= ~(r_vsync_counter >= (V_VISIBLE_AREA + V_FRONT_PORCH) && r_vsync_counter < (V_VISIBLE_AREA + V_FRONT_PORCH + V_SYNC_PULSE));
-        
-        r_video_en <= (r_hsync_counter < H_VISIBLE_AREA) && (r_vsync_counter < V_VISIBLE_AREA);
     end
 
 endmodule

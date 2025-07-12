@@ -7,6 +7,7 @@ set_io leds[1] A7
 # system clock
 set_io clk J3
 set_frequency clk 100.00
+set_frequency video_clk 25.00
 
 # PS/2 input
 set_io ps2_kbdat D3
