@@ -1,0 +1,77 @@
+# user LEDs
+set_io led1 A6
+set_io led2 A7
+set_io leds[0] A6
+set_io leds[1] A7
+
+# system clock
+set_io clk J3
+set_frequency clk 100.00
+set_frequency video_clk 25.00
+
+# PS/2 input
+set_io ps2_kbdat D3
+set_io ps2_kbclk E3
+
+# VGA output
+set_io vga_red[0] B8
+set_io vga_red[1] C9
+set_io vga_red[2] C10
+set_io vga_red[3] B11
+set_io vga_red[4] B14
+
+set_io vga_green[0] A9
+set_io vga_green[1] B9
+set_io vga_green[2] A10
+set_io vga_green[3] B10
+set_io vga_green[4] A11
+set_io vga_green[5] C14
+
+set_io vga_blue[0] A15
+set_io vga_blue[1] A16
+set_io vga_blue[2] B15
+set_io vga_blue[3] B16
+set_io vga_blue[4] C16
+
+set_io vga_hsync C13
+set_io vga_vsync D13
+
+# GPIO
+set_io gpio_2 T3
+set_io gpio_3 R3
+set_io gpio_4 T2
+set_io gpio_14 R2
+set_io gpio_18 P2
+set_io gpio_22 N2
+set_io gpio_9 J2
+set_io gpio_11 H2
+set_io gpio_7 G2
+set_io gpio_0 F2
+set_io gpio_12 D2
+set_io gpio_13 C2
+set_io gpio_19 B2
+set_io gpio_26 A2
+set_io gpio_15 T1
+set_io gpio_17 R1
+set_io gpio_27 P1
+set_io gpio_23 M1
+set_io gpio_24 L1
+set_io gpio_10 K1
+set_io gpio_25 J1
+set_io gpio_8 H1
+set_io gpio_1 F1
+set_io gpio_5 D1
+set_io gpio_6 C1
+set_io gpio_16 B1
+set_io gpio_20 A1
+set_io gpio_21 A5 -pullup yes
+
+# Pmod
+set_io pmod_1 D15
+set_io pmod_2 E16
+set_io pmod_3 F16
+set_io pmod_4 G16
+set_io pmod_5 D16
+set_io pmod_6 F15
+set_io pmod_7 G15
+set_io pmod_8 J16
