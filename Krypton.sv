@@ -45,8 +45,12 @@ module Krypton (
     always_ff @(posedge clk) begin
         if (state == STATE_COLOR_LOAD) begin
             if (h_count == H_TOTAL - 1) begin
-                if (v_count == V_TOTAL - 1)
+                if (v_count == V_TOTAL - 1) begin
                     v_count <= 10'd0;
+
+                    scroll_x <= scroll_x + 0; 
+                    scroll_y <= scroll_y + 0;
+                end
                 else
                     v_count <= v_count + 10'd1;
             end
@@ -55,8 +59,8 @@ module Krypton (
 
     always_ff @(posedge clk) begin
         if (state == STATE_XY_LOAD) begin
-            pixel_x <= (h_count < H_ACTIVE) ? h_count : 10'd0;
-            pixel_y <= (v_count < V_ACTIVE) ? v_count : 10'd0;
+            pixel_x <= (h_count < H_ACTIVE) ? h_count + scroll_x : scroll_x;
+            pixel_y <= (v_count < V_ACTIVE) ? v_count + scroll_y : scroll_y;
         end
         
         if (state == STATE_COLOR_LOAD) begin
@@ -99,27 +103,11 @@ module Krypton (
         .i_clk(clk),
         .i_pixel_x(pixel_x),
         .i_pixel_y(pixel_y),
-        .i_state(state),
         .o_color(color_out)
     );
 
-    // Sync generation and latching color
+    // State incrementing
     always_ff @(posedge clk) begin
-        if (state == STATE_XY_LOAD) begin
-            
-            
-        end else if (state == STATE_TILE_LOAD) begin
-            
-            
-        end else if (state == STATE_ROM_LOAD) begin
-            
-
-        end else if (state == STATE_COLOR_LOAD) begin
-            /*color_out <= ~(pixel_x[3] ^ pixel_y[3])
-                            ? {1'b1, ~{pixel_x[2:0]}, 1'b0, 1'b1, ~{pixel_x[2:0]}, 2'b00, 1'b1, ~pixel_x[2:0], 1'b0}
-                            : 16'h0;*/
-        end
-
         state <= state + 1;
     end
 

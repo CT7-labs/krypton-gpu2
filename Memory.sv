@@ -1,4 +1,4 @@
-module memory8k (
+module mem_tilemap (
     input wire i_clk,
     input logic wen, 
     input logic ren, 
@@ -20,7 +20,7 @@ module memory8k (
     end
 endmodule
 
-module memory2k (
+module mem_tilerom (
     input wire i_clk,
     input logic wen, 
     input logic ren, 
@@ -31,7 +31,7 @@ module memory2k (
     reg [7:0] mem [0:2047];
 
     initial begin
-        $readmemh("tilerom.hex", mem);
+        $readmemh("ibmbios.hex", mem);
     end
 
     always_ff @(posedge i_clk) begin
@@ -40,4 +40,28 @@ module memory2k (
         if (ren)
             rdata <= mem[raddr];
     end
+endmodule
+
+module mem_palette (
+    input wire i_clk,
+    input logic wen, 
+    input logic ren, 
+    input [12:0] waddr, raddr,
+    input [1:0] wdata,
+    output logic [1:0] rdata
+);
+
+    reg [1:0] mem [0:8191];
+
+    initial begin
+        $readmemh("tilepalette.hex", mem);
+    end
+
+    always_ff @(posedge i_clk) begin
+        if (wen)
+            mem[waddr] <= wdata;
+        if (ren)
+            rdata <= mem[raddr];
+    end
+
 endmodule
