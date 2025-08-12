@@ -40,6 +40,8 @@ module Krypton (
             if (r_vsync_counter == V_TOTAL - 1) begin
                 r_vsync_counter <= 0;
                 pixel_y <= scroll_y;
+                scroll_x <= scroll_x - 1 % 640;
+                scroll_y <= scroll_x - 1 % 480;
             end else begin
                 r_vsync_counter <= r_vsync_counter + 1;
                 pixel_y <= pixel_y + 1;
@@ -57,9 +59,21 @@ module Krypton (
 
         // Registered color output (only active in visible area, mitigates glitches)
         if ((r_hsync_counter < H_VISIBLE_AREA) && (r_vsync_counter < V_VISIBLE_AREA)) begin
-            vga_red   <= pixel_x[3] ? 5'h1F : 0;
-            vga_green <= pixel_x[3] ? 6'h2A : 0;
-            vga_blue  <= 0;
+            if (r_hsync_counter[1:0] == 2'b00) begin
+                if (~(|pixel_x[9:3]) && ~(|pixel_y[8:3])) begin
+                    vga_red <= 5'h1F;
+                    vga_green <= 6'h3F;
+                    vga_blue <= 5'h1F;
+                end else begin
+                    vga_red   <= pixel_x[3] ^ pixel_y[3] ? ~pixel_x[7:3] : 0;
+                    vga_green <= pixel_x[3] ^ pixel_y[3] ? {pixel_y[7:3], pixel_y[3]} : 0;
+                    vga_blue  <= pixel_x[3] ^ pixel_y[3] ? pixel_x[7:3] : 0; 
+                end
+            end else begin
+                vga_red <= vga_red;
+                vga_green <= vga_green;
+                vga_blue <= vga_blue;
+            end
         end else begin
             vga_red   <= 5'b00000;
             vga_green <= 6'b000000;
