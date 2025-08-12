@@ -5,7 +5,7 @@
 TMP_DIR = tmp
 
 # Top-level Verilog file
-TOP_FILE = Krypton.sv # <- files go here
+TOP_FILE = Krypton.sv Video.sv Memory.sv# <- files go here
 TOP_MODULE = Krypton  # <- top module goes here
 
 # Output files
