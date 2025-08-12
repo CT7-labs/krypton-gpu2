@@ -16,7 +16,24 @@ endmodule
 
 module Video (
     input i_clk,
-    input 
+    input [9:0] pixel_x,
+    input [8:0] pixel_y,
+    
 );
+
+    // wire setup
+    logic tile_addr;
+    assign tile_addr = {pixel_y[8:3], pixel_x[9:3]};
+
+    logic [2:0] tile_x, tile_y;
+    assign tile_x = pixel_x[2:0];
+    assign tile_y = pixel_y[2:0];
+
+    // palette init
+    logic [15:0] color [0:1];
+    initial begin
+        color[0] = 16'h0000;
+        color[1] = 16'hFFFF;
+    end
     
 endmodule
