@@ -54,7 +54,7 @@ module Krypton (
     end
 
     always_ff @(posedge clk) begin
-        if (state == STATE_ROM_LOAD) begin
+        if (state == STATE_XY_LOAD) begin
             pixel_x <= (h_count < H_ACTIVE) ? h_count : 10'd0;
             pixel_y <= (v_count < V_ACTIVE) ? v_count : 10'd0;
         end
@@ -94,6 +94,15 @@ module Krypton (
         end
     end
 
+    // Video
+    Video video_inst (
+        .i_clk(clk),
+        .i_pixel_x(pixel_x),
+        .i_pixel_y(pixel_y),
+        .i_state(state),
+        .o_color(color_out)
+    );
+
     // Sync generation and latching color
     always_ff @(posedge clk) begin
         if (state == STATE_XY_LOAD) begin
@@ -106,9 +115,9 @@ module Krypton (
             
 
         end else if (state == STATE_COLOR_LOAD) begin
-            color_out <= ~(pixel_x[3] ^ pixel_y[3])
+            /*color_out <= ~(pixel_x[3] ^ pixel_y[3])
                             ? {1'b1, ~{pixel_x[2:0]}, 1'b0, 1'b1, ~{pixel_x[2:0]}, 2'b00, 1'b1, ~pixel_x[2:0], 1'b0}
-                            : 16'h0;
+                            : 16'h0;*/
         end
 
         state <= state + 1;

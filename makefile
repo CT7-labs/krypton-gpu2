@@ -21,6 +21,7 @@ all: clean synth program
 # Synthesize the design using Yosys
 .PHONY: synth
 synth:
+	python3 generator.py
 	mkdir -p $(TMP_DIR)
 	yosys -p 'synth_ice40 -top $(TOP_MODULE) -json $(JSON)' $(TOP_FILE)
 

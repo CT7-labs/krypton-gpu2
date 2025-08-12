@@ -6,15 +6,35 @@ module memory8k (
     input [7:0] wdata,
     output logic [7:0] rdata
 );
-    logic [7:0] mem [0:8191];
+    reg [7:0] mem [0:8191];
 
     initial begin
-        for (integer i = 0; i < 8192; i = i + 1) begin
-            mem <= i[7:0];
-        end
+        $readmemh("tilemap.hex", mem);
     end
 
-    always @(posedge clk) begin
+    always_ff @(posedge i_clk) begin
+        if (wen)
+            mem[waddr] <= wdata;
+        if (ren)
+            rdata <= mem[raddr];
+    end
+endmodule
+
+module memory2k (
+    input wire i_clk,
+    input logic wen, 
+    input logic ren, 
+    input [10:0] waddr, raddr,
+    input [7:0] wdata,
+    output logic [7:0] rdata
+);
+    reg [7:0] mem [0:2047];
+
+    initial begin
+        $readmemh("tilerom.hex", mem);
+    end
+
+    always_ff @(posedge i_clk) begin
         if (wen)
             mem[waddr] <= wdata;
         if (ren)
